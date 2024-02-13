@@ -2,7 +2,7 @@ project_name: 3D_CLIP
 clip_embed_dim: 1280
 clip_embed_version: OpenCLIP
 model:
-  name: MinkResNet34 
+  name: PointNet
   in_channel: 6
   out_channel: ${clip_embed_dim}
   embedding_channel: 1024
