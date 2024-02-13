@@ -5,7 +5,7 @@ import torch
 import sys
 from param import parse_args
 import models
-import MinkowskiEngine as ME
+#import MinkowskiEngine as ME
 from utils.data import normalize_pc
 from utils.misc import load_config
 from huggingface_hub import hf_hub_download
@@ -33,13 +33,15 @@ def load_ply(file_name, num_points=10000, y_up=True):
     features = np.concatenate([xyz, rgb], axis=1)
     xyz = torch.from_numpy(xyz).type(torch.float32)
     features = torch.from_numpy(features).type(torch.float32)
-    return ME.utils.batched_coordinates([xyz], dtype=torch.float32), features
+    #return ME.utils.batched_coordinates([xyz], dtype=torch.float32), features
+    return xyz, features
 
 def load_model(config, model_name="OpenShape/openshape-spconv-all"):
     model = models.make(config).cuda()
 
     if config.model.name.startswith('Mink'):
-        model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
+        #model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
+        pass
     else:
         model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
 
