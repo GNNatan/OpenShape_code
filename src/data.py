@@ -4,7 +4,7 @@ import numpy as np
 import random
 from utils.data import random_rotate_z, normalize_pc, augment_pc
 from torch.utils.data import Dataset, DataLoader
-import MinkowskiEngine as ME
+#import MinkowskiEngine as ME
 import logging
 import copy
 from torch.utils.data.distributed import DistributedSampler
@@ -225,7 +225,7 @@ def minkowski_collate_fn(list_data):
             merged_list += data
         list_data = merged_list
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        #"xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
         "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
@@ -310,7 +310,7 @@ class ModelNet40Test(Dataset):
 
 def minkowski_modelnet40_collate_fn(list_data):
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        #"xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
         "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
@@ -376,7 +376,7 @@ class ObjaverseLVIS(Dataset):
     
 def minkowski_objaverse_lvis_collate_fn(list_data):
     return {
-        "xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
+        #"xyz": ME.utils.batched_coordinates([data["xyz"] for data in list_data], dtype=torch.float32),
         "features": torch.cat([data["features"] for data in list_data], dim=0),
         "xyz_dense": torch.stack([data["xyz"] for data in list_data]).float(),
         "features_dense": torch.stack([data["features"] for data in list_data]),
