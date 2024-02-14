@@ -4,7 +4,7 @@ import logging
 import shutil
 import data
 import models
-import MinkowskiEngine as ME
+#import MinkowskiEngine as ME
 import torch
 import wandb
 from omegaconf import OmegaConf
@@ -65,12 +65,12 @@ def main(rank, world_size, cli_args, extras):
         torch.cuda.set_device(rank)
         model.cuda(rank)
         model = DDP(model, device_ids=[rank], output_device=rank, find_unused_parameters=False)
-        if config.model.name.startswith('Mink'):
-            model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
-            logging.info("Using MinkowskiSyncBatchNorm")
-        else:
-            model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
-            logging.info("Using SyncBatchNorm")
+        #if config.model.name.startswith('Mink'):
+            #model = ME.MinkowskiSyncBatchNorm.convert_sync_batchnorm(model) # minkowski only
+            #logging.info("Using MinkowskiSyncBatchNorm")
+        #else:
+        model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)
+        logging.info("Using SyncBatchNorm")
 
         logit_scale = LogitScaleNetwork(config.training.logit_scale_init).to(config.device)
         image_proj = torch.nn.Linear(config.model.out_channel, config.model.out_channel).to(config.device)
