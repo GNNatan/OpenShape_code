@@ -100,7 +100,7 @@ def query_ball_point(radius, nsample, xyz, new_xyz):
     B, N, C = xyz.shape
     _, S, _ = new_xyz.shape
     group_idx = torch.arange(N, dtype=torch.long).to(device).view(1, 1, N).repeat([B, S, 1])
-    sqrdists = square_distance(new_xyz, xyz)
+    sqrdists = square_distance(new_xyz.cuda(), xyz.cuda())
     group_idx[sqrdists > radius ** 2] = N
     group_idx = group_idx.sort(dim=-1)[0][:, :, :nsample]
     group_first = group_idx[..., :1].repeat([1, 1, nsample])
@@ -125,17 +125,17 @@ def sample_and_group(npoint, radius, nsample, xyz, points, returnfps=False):
     S = npoint
     fps_idx = farthest_point_sample(xyz, npoint) # [B, npoint, C]
     # torch.cuda.empty_cache()
-    new_xyz = index_points(xyz, fps_idx)
+    new_xyz = index_points(xyz, fps_idx).cuda()
     # torch.cuda.empty_cache()
     idx = query_ball_point(radius, nsample, xyz, new_xyz)
     # torch.cuda.empty_cache()
-    grouped_xyz = index_points(xyz, idx) # [B, npoint, nsample, C]
+    grouped_xyz = index_points(xyz, idx).cuda() # [B, npoint, nsample, C]
     # torch.cuda.empty_cache()
     grouped_xyz_norm = grouped_xyz - new_xyz.view(B, S, 1, C)
     # torch.cuda.empty_cache()
 
     if points is not None:
-        grouped_points = index_points(points, idx)
+        grouped_points = index_points(points, idx).cuda()
         new_points = torch.cat([grouped_xyz_norm, grouped_points], dim=-1) # [B, npoint, nsample, C+D]
     else:
         new_points = grouped_xyz_norm

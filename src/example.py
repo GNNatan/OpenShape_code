@@ -32,11 +32,12 @@ def load_ply(file_name, num_points=10000, y_up=True):
         rgb = np.ones_like(rgb) * 0.4
     features = np.concatenate([xyz, rgb], axis=1)
     xyz = torch.from_numpy(xyz).type(torch.float32)
+    print(xyz)
     features = torch.from_numpy(features).type(torch.float32)
     #return ME.utils.batched_coordinates([xyz], dtype=torch.float32), features
-    return xyz, features
+    return torch.stack([xyz]).float(), torch.stack([features]).cuda()
 
-def load_model(config, model_name="OpenShape/openshape-spconv-all"):
+def load_model(config, model_name="OpenShape/openshape-pointbert-vitg14-rgb"):
     model = models.make(config).cuda()
 
     if config.model.name.startswith('Mink'):
@@ -78,11 +79,11 @@ open_clip_model, _, open_clip_preprocess = open_clip.create_model_and_transforms
 open_clip_model.cuda().eval()
 
 print("extracting 3D shape feature...")
-xyz, feat = load_ply("demo/pc.ply")
+xyz, feat = load_ply("demo/owl.ply")
 shape_feat = model(xyz, feat, device='cuda', quantization_size=config.model.voxel_size) 
 
 print("extracting text features...")
-texts = ["owl", "chicken", "penguin"]
+texts = ["owl", "chair", "sofa"]
 text_feat = extract_text_feat(texts, open_clip_model)
 print("texts: ", texts)
 print("3D-text similarity: ", F.normalize(shape_feat, dim=1) @ F.normalize(text_feat, dim=1).T)
