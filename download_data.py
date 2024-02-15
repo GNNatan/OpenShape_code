@@ -13,17 +13,18 @@ def single_uncompress(file, dest="/mnt/data"):
 	os.system("rm %s/%s" % (dest, file))
 
 
-NUM_PROC = 16
-pool = Pool(NUM_PROC)
+if __name__ == '__main__':
+	NUM_PROC = 16
+	pool = Pool(NUM_PROC)
 
-pool.apply_async(single_uncompress, ("meta_data.zip", "./"))
+	pool.apply_async(single_uncompress, ("meta_data.zip", "./"))
 
-files = ["3D-FUTURE.tar.gz", "ABO.tar.gz", "ShapeNet.tar.gz"]
-for file in files:
-	pool.apply_async(single_uncompress, (file,))
+	files = ["3D-FUTURE.tar.gz", "ABO.tar.gz", "ShapeNet.tar.gz"]
+	for file in files:
+		pool.apply_async(single_uncompress, (file,))
 
-for i in range(160):
-	pool.apply_async(single_uncompress, ("Objaverse/000-%03d.tar.gz" % i,))
+	for i in range(160):
+		pool.apply_async(single_uncompress, ("Objaverse/000-%03d.tar.gz" % i,))
 	
-pool.close()
-pool.join()
+	pool.close()
+	pool.join()
