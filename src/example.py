@@ -70,7 +70,7 @@ def extract_image_feat(images, clip_model, clip_preprocess):
 
 print("loading OpenShape model...")
 cli_args, extras = parse_args(sys.argv[1:])
-config = load_config("src/configs/train.yaml", cli_args = vars(cli_args), extra_args = extras)
+config = load_config("configs/train.yaml", cli_args = vars(cli_args), extra_args = extras)
 model = load_model(config)
 model.eval()
 
