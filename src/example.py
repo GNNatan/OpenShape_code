@@ -83,7 +83,7 @@ xyz, feat = load_ply("demo/owl.ply")
 shape_feat = model(xyz, feat, device='cuda', quantization_size=config.model.voxel_size) 
 
 print("extracting text features...")
-texts = ["owl", "chair", "sofa"]
+texts = ["bed", "chair", "sofa"]
 text_feat = extract_text_feat(texts, open_clip_model)
 print("texts: ", texts)
 print("3D-text similarity: ", F.normalize(shape_feat, dim=1) @ F.normalize(text_feat, dim=1).T)
